@@ -1,12 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from "mongoose";
 
-const ChatSchema = new mongoose.Schema(
-  {
-    username: { type: String, required: true },
-    message: { type: String, required: true },
-    room: { type: String },
-  },
-  { timestamps: true }
-);
+export interface IChat {
+  username: string;
+  message: string;
+  room: string;
+}
 
-export const Chat = mongoose.model('Chat', ChatSchema);
+const ChatSchema: Schema = new Schema<IChat>({
+  username: { type: String, required: true },
+  message: { type: String, required: true },
+  room: { type: String },
+});
+
+export const Chat = mongoose.model("Chat", ChatSchema);
