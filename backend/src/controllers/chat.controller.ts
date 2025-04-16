@@ -11,6 +11,19 @@ const getAllChats = async (req: Request, res: Response) => {
   }
 };
 
+// Get chats by each room
+const getRoomChats = async (req: Request<{ room: string }>, res: Response) => {
+  const { room } = req.params;
+  try {
+    console.log(room);
+    const chats = await Chat.find({ room });
+    res.status(200).json(chats);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching chats" });
+  }
+};
+
 export default {
   getAllChats,
+  getRoomChats,
 };

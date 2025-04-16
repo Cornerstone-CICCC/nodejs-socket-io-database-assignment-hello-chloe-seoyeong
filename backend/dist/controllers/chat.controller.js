@@ -20,6 +20,19 @@ const getAllChats = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ error: "Error fetching chats" });
     }
 });
+// Get chats by each room
+const getRoomChats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { room } = req.params;
+    try {
+        console.log(room);
+        const chats = yield chat_model_1.Chat.find({ room });
+        res.status(200).json(chats);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Error fetching chats" });
+    }
+});
 exports.default = {
     getAllChats,
+    getRoomChats,
 };

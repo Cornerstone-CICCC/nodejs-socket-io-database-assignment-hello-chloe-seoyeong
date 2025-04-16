@@ -10,12 +10,11 @@ const setupChatSocket = (io: Server) => {
 
     // Listen to 'sendMessage' event
     socket.on("sendMessage", async (data) => {
-      const { username, message } = data;
-      console.log(username, message);
+      const { username, message, room } = data;
 
       try {
         // Save message to MongoDB
-        const chat = new Chat({ username, message });
+        const chat = new Chat({ username, message, room });
         await chat.save();
 
         // Broadcast the chat object to all connected clients via the newMessage event
@@ -36,6 +35,27 @@ const setupChatSocket = (io: Server) => {
     socket.broadcast.emit("newMessage", {
       username: "System",
       message: `${socket.id} just joined chat. 😀`,
+    });
+
+    socket.on("join room", (data) => {
+      socket.join(data.room);
+      console.log(`${data.username} has joined ${data.room}`);
+
+      io.to(data.room).emit("newMessage", {
+        username: "System",
+        message: `${data.username} joined the ${data.room}`,
+        room: data.room,
+      }); // to: 특정 룸에 보낼수있어
+    });
+
+    socket.on("leave room", (data) => {
+      socket.leave(data.room);
+      console.log(`${data.username} left ${data.room}`);
+      io.to(data.room).emit("newMessage", {
+        username: "System",
+        message: `${data.username} has left chat.`,
+        room: data.room,
+      });
     });
 
     // On disconnect
